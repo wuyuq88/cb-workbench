@@ -77,7 +77,7 @@ body.locked>*:not(#lock){display:none}
 <div class="err" id="pwerr"></div>
 </div></div>
 <h1>转债相似性与聚类工作台 <span style="font-size:13px;color:var(--dim)">v4</span></h1>
-<div class="sub">数据 2026-08-06 · 候选池（已剔除公告强赎）· Gower 加权距离 · 债性/非债性两桶 · 近邻分正常/保护期/次新三组列示 · 层次聚类 9 簇 + UMAP · <a href="timing.html" style="color:var(--acc)">转债择时看板 →</a></div>
+<div class="sub">数据 2026-08-06 · 候选池 295 只（已剔除公告强赎）· Gower 加权距离 · 债性/非债性两桶 · 近邻分正常/保护期/次新三组列示 · 层次聚类 9 簇 + UMAP</div>
 <div class="tabs">
 <button id="tab1" class="on" onclick="showPage(1)">相似券查询</button>
 <button id="tab2" onclick="showPage(2)">全市场聚类地图</button>
@@ -174,10 +174,10 @@ async function unlock(){
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
   const hex = [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
   if(hex !== PW_HASH){ document.getElementById('pwerr').textContent = '密码错误'; return; }
+  localStorage.setItem('cb_auth', PW_HASH);  // 择时看板(timing.html)凭此标记免密进入
   try{
     const dec = s => JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(s), c=>c.charCodeAt(0))));
     const DATA = dec(SIM_B64), CLU = dec(CLU_B64);
-    localStorage.setItem('cb_auth', PW_HASH);  // 择时看板(timing.html)凭此标记免密进入
     document.getElementById('lock').remove();
     document.body.classList.remove('locked');
     startApp(DATA, CLU);
