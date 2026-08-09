@@ -186,18 +186,17 @@ mk('chA',{tooltip:{trigger:'axis'},grid:baseGrid({right:56}),xAxis:timeAxis(),
  ]});
 
 /* ---- P 期权定价偏离度 ---- */
-mk('chP',{tooltip:{trigger:'axis'},grid:baseGrid({right:96}),xAxis:timeAxis(),
- yAxis:[{scale:true,name:'偏离度 %'},{scale:true,name:'中证转债',splitLine:{show:false}},{min:0,max:100,name:'2020分位 %',splitLine:{show:false}}],
+mk('chP',{tooltip:{trigger:'axis'},grid:baseGrid({right:56,top:40}),xAxis:timeAxis(),
+ yAxis:[{scale:true,name:'偏离度 %'},{min:0,max:100,name:'2020分位 %',splitLine:{show:false}}],
  dataZoom:[{type:'inside'},{type:'slider',bottom:8,height:16}],
- legend:{data:['偏离度 D','转债指数(右)','2020分位(面积)'],top:4,textStyle:{fontSize:11}},
+ legend:{data:['偏离度 D','2020分位(面积)'],top:4,textStyle:{fontSize:11}},
  series:[
   {name:'偏离度 D',type:'line',showSymbol:false,data:D.p_dev,lineStyle:{width:1.5,color:'#c0392b'},itemStyle:{color:'#c0392b'},areaStyle:{opacity:0.06},
    markLine:{symbol:'none',silent:true,label:{show:true,fontSize:10},
     data:[{yAxis:10,lineStyle:{color:RED,type:'dashed'},label:{formatter:'+10% 卖出阈值'}},
           {yAxis:-5,lineStyle:{color:GREEN,type:'dashed'},label:{formatter:'−5% 做多阈值'}},
           {yAxis:0,lineStyle:{color:GRAY,opacity:0.5},label:{show:false}}]}},
-  {name:'转债指数(右)',type:'line',showSymbol:false,data:D.p_cb,yAxisIndex:1,lineStyle:{width:1,color:GRAY},itemStyle:{color:GRAY}},
-  {name:'2020分位(面积)',type:'line',showSymbol:false,data:D.p_dev_pct,yAxisIndex:2,lineStyle:{width:0.8,color:'#7c4dbc',opacity:0.6},itemStyle:{color:'#7c4dbc'},areaStyle:{opacity:0.12},silent:true}
+  {name:'2020分位(面积)',type:'line',showSymbol:false,data:D.p_dev_pct,yAxisIndex:1,lineStyle:{width:0.8,color:'#7c4dbc',opacity:0.6},itemStyle:{color:'#7c4dbc'},areaStyle:{opacity:0.12},silent:true}
  ]});
 function pctOf(arr){ const last=arr[arr.length-1][1]; let n=0; arr.forEach(p=>{if(p[1]<last)n++}); return Math.round(n/arr.length*100); }
 mk('chB',{tooltip:{trigger:'axis'},grid:baseGrid({right:56}),xAxis:timeAxis(),
