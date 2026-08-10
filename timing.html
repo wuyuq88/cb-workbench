@@ -22,6 +22,8 @@ h1{font-size:20px;font-weight:600}
 .card.hot .c-sub{color:var(--red);font-weight:600}
 .sect{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:18px}
 .sect h2{font-size:15px;font-weight:600;margin-bottom:8px}
+.dlbtn{float:right;margin-top:-4px;font-size:11px;color:var(--blue);background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 10px;cursor:pointer}
+.dlbtn:hover{background:#eef4ff}
 .chart{width:100%;height:380px}
 .chart.tall{height:430px}
 .chart.heat{height:340px}
@@ -83,14 +85,14 @@ h1{font-size:20px;font-weight:600}
 <div class="c-sub">历史分位 45% · 区间内</div></div>
 </div>
 
-<div class="sect"><h2>A · 百元溢价率（softplus 默认 / 指数法对照）</h2>
+<div class="sect"><h2>A · <button class="dlbtn" onclick="dlCSV('A')">导出CSV</button> 百元溢价率（softplus 默认 / 指数法对照）</h2>
 <div id="chA" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（百元溢价率，softplus 版为默认）</b><br>
 逐日对全市场转债做截面回归：剔除 (价格 + 转股溢价率) 最高的 5 个异常值、已公告强赎券，拟合混合曲线：<br>
 价格 = c·(a + b·ln(1+e<sup>(平价−a)/b</sup>)) + (1−c)·平价， bounds: a∈[50,140], b∈[1,100], c∈[0.3,1]；<br>
 代入平价=100，反推出"一只平价 100 的标准转债"的市场价格，其溢价部分即<b>百元溢价率</b>。softplus 版日变化 std=0.696，稳定性优于指数旧法（0.815）。<br><br>
 <b>读法</b>：<b>&gt;26% 为长期高估区分界线</b>（虚线）。该指标偏长期：在 120 日以上维度择时有效，40 日以内无效——它回答"现在贵不贵"，不回答"下周涨不涨"。</div></details></div>
 
-<div class="sect"><h2>P · 期权定价偏离度（50%分位数 · 自研 BSM 模型）</h2>
+<div class="sect"><h2>P · <button class="dlbtn" onclick="dlCSV('P')">导出CSV</button> 期权定价偏离度（50%分位数 · 自研 BSM 模型）</h2>
 <div class="legend-note">主线=偏离度中位数 D%；灰线(右轴)=中证转债指数；绿线=−5% 做多阈值 · 红线=+10% 卖出阈值</div>
 <div id="chP" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（期权定价偏离度 · 自研模型）</b><br>
 逐券 BSM 定价：理论价 = 纯债腿 + 转股腿 + 期权腿（波动率用 250/120 日年化实际波动率，缺失券以中位数兜底并标记）；偏离度 dev = (实际价 − 理论价) / 理论价 × 100%。<b>D = 全市场偏离度中位数</b>（本图主线，剔特殊券口径在日志中另列）。<br><br>
@@ -100,7 +102,7 @@ h1{font-size:20px;font-weight:600}
 · 中间区无信号，维持原状态。直觉：D 过低 = 错杀修复机会，D 过高 = 透支理论价值的泡沫区。<br>
 · 当前 D = 18.0%，处历史 100 分位深度高估区，信号状态 FLAT（空仓观望）。</div></details></div>
 
-<div class="sect"><h2>B · 价格与溢价率水平</h2>
+<div class="sect"><h2>B · <button class="dlbtn" onclick="dlCSV('B')">导出CSV</button> 价格与溢价率水平</h2>
 <div class="legend-note">全市场均价 165.5 元（历史分位 99%）· 中位价 136.3 元（分位 97%）</div>
 <div id="chB" class="chart"></div>
 <div class="legend-note" style="margin-top:10px">转股溢价率中位数 55.61%（历史分位 98%）</div>
@@ -109,12 +111,12 @@ h1{font-size:20px;font-weight:600}
 · <b>转股溢价率中位数</b>：全市场转股溢价率的中位数，刻画市场整体的股性/债性结构。<br><br>
 <b>读法</b>：图例与图上方标注的<b>历史分位</b> = 当前值在全历史样本中的百分位（分位越高越贵）。中位价低于均价说明高价券拉高了均值、分布右偏；溢价率中位数持续抬升 = 市场整体向债性迁移。</div></details></div>
 
-<div class="sect"><h2>C · 弱势品种表现（资金过热度）</h2>
+<div class="sect"><h2>C · <button class="dlbtn" onclick="dlCSV('C')">导出CSV</button> 弱势品种表现（资金过热度）</h2>
 <div id="chC" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（弱势品种表现 / 资金过热指标）</b><br>
 取 余额 ≥ 20 亿元 且 转股溢价率 &gt; 35% 的"弱势品种"（大盘、债性、缺乏弹性的券），计算其<b>债底溢价率均值 → 10 日差分 → 10 日移动平均</b>。<br><br>
 <b>读法</b>：弱势品种的债底溢价率快速抬升，意味着资金已经"买不到好货开始买差货"，是典型的<b>资金推动型过热</b>。<b>≥ 2.5% 触发预警</b>（红色虚线），在 25~55 日维度对应负面预期。2026-07-24 曾触及 2.60 预警线。</div></details></div>
 
-<div class="sect"><h2>H · 甜点转债数（期权定价视角的市场难易度）</h2>
+<div class="sect"><h2>H · <button class="dlbtn" onclick="dlCSV('H')">导出CSV</button> 甜点转债数（期权定价视角的市场难易度）</h2>
 <div class="legend-note">主线=甜点数（只），右轴=甜点率%；绿线=150 机会充沛 · 灰线=85 决策树分界 · 红线=55 匮乏警戒</div>
 <div id="chH" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（甜点转债数 · 近似复刻券商研报《被遗忘的theta》）</b><br>
 把转债拆成"债券底 + 认购期权"：到期兑付 max(转股价值, 到期赎回价) = R + max(平价−R, 0)，因此 embedded 期权的行权价 K = <b>到期赎回价</b>（来源：raw_info 表补偿利率 874 只 + Wind 45 只精确值 + 44 只按 100+末期票息+6 估计，已经 Wind 155 只交叉验证：有效样本 100% 一致）。<br>
@@ -127,12 +129,12 @@ h1{font-size:20px;font-weight:600}
 · <b>&lt;55 只</b>（红虚线）：叠加中位价 &gt;127 元 = "贵且脆弱"高风险组合；<br>
 · 偏左侧指标，衡量"市场给出多少容易获利的券"，适合决定仓位提升节奏。</div></details></div>
 
-<div class="sect"><h2>D · 债性偏离度（21日 / 55日）</h2>
+<div class="sect"><h2>D · <button class="dlbtn" onclick="dlCSV('D')">导出CSV</button> 债性偏离度（21日 / 55日）</h2>
 <div id="chD" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（债性偏离度）</b><br>
 平价 &lt; 70 的债性品种，其<b>纯债溢价率均值</b>与 21 日 / 55 日均线的偏离程度（%）。<br><br>
 <b>读法</b>：债性品种的纯债溢价率是最"干净"的估值锚（几乎不含期权价值）。偏离度到极端负值（深砸到均线下方）时，往往是<b>左侧机会区</b>——市场错杀债底都保不住的品种，情绪过度悲观；极端正值则提示债性券也被追捧过热。</div></details></div>
 
-<div class="sect"><h2>E · 估值试纸（21 日累计估值压缩幅度 %）</h2>
+<div class="sect"><h2>E · <button class="dlbtn" onclick="dlCSV('E')">导出CSV</button> 估值试纸（21 日累计估值压缩幅度 %）</h2>
 <div class="legend-note">行=估值档（低/中/高 h 分位），列内分组=债性/平衡/股性；蓝=压缩，红=拉升</div>
 <div id="chE" class="chart heat"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（估值试纸 · 21 日累计压缩幅度）</b><br>
 固定一条基准估值曲线 C0：价格 = a + b·平价 + c/平价（全历史拟合，不随日变动）；个券每日 h = 实际溢价率 − C0 隐含溢价率。按 h 分三档（低/中/高估值）× 平价分三档（债性/平衡/股性）得 <b>9 宫格</b>。<br>
@@ -142,13 +144,13 @@ h1{font-size:20px;font-weight:600}
 · <b>高估值组</b>压缩幅度天然最大（弹性大），且<b>债性品种的估值压缩多为永久性丢失</b>（回不去），不要把债性格的深蓝当作"便宜"；<br>
 · 全格同步深蓝 = 系统性杀估值（如 2024 年初、2026-02）；单格孤立深蓝 = 结构性机会。</div></details></div>
 
-<div class="sect"><h2>R · 转债 / 正股相对强弱（889033 ÷ 889035）</h2>
+<div class="sect"><h2>R · <button class="dlbtn" onclick="dlCSV('R')">导出CSV</button> 转债 / 正股相对强弱（889033 ÷ 889035）</h2>
 <div class="legend-note">主线=转债/正股比值(左轴)；副线=比值相对250日均线的偏离%(右轴)——偏离极端后均值回归</div>
 <div id="chR" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（转债 / 正股相对强弱）</b><br>
 比值 = 万得转债等权指数(889033) ÷ 万得转债正股等权指数(889035)，以 2018 年初为基期。两个指数样本一一对应，比值剔除了正股本身的涨跌，<b>纯粹刻画转债估值（溢价率）的扩张与收缩</b>。<br><br>
 <b>读法</b>：比值上行 = 转债跑赢正股 = 溢价率扩张期（转债资金进攻）；比值下行 = 转债跑输 = 杀溢价期。极端高位往往对应顶部区（转债涨过头），极端低位对应底部区。与百元溢价率互为印证。</div></details></div>
 
-<div class="sect"><h2>S · 情绪值（万得全A换手率 · 暂定口径）</h2>
+<div class="sect"><h2>S · <button class="dlbtn" onclick="dlCSV('S')">导出CSV</button> 情绪值（万得全A换手率 · 暂定口径）</h2>
 <div class="legend-note">红线=情绪值（换手MA10/MA120偏离%，左轴）· 灰线=换手率%（右轴）· 灰面积=换手率250日分位</div>
 <div id="chS" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（情绪值 · 万得全A换手率口径，暂定）</b><br>
 数据源：万得全A(881001.WI) 每日换手率（Wind，2018 年起）。<br>
@@ -157,7 +159,7 @@ h1{font-size:20px;font-weight:600}
 <b>读法</b>：情绪值 &gt; +30% 或分位 &gt;95% = 明显过热（2024-10-08 情绪值 +71.5、分位 100%，经典顶部特征）；情绪值深负 + 分位 &lt;10% = 交易冰封，常见左侧底部区。该口径为暂定版，与券商研报原始"情绪值"公式可能不同，后续按研报原文校准。<br>
 <b>局限性</b>：10/120 均线偏离变化偏慢，对 2021 年末这类"温和过热"不敏感——它抓爆发式情绪，不抓阴跌式退潮。</div></details></div>
 
-<div class="sect"><h2>G · 风格轮动边界（40 日涨跌幅差）</h2>
+<div class="sect"><h2>G · <button class="dlbtn" onclick="dlCSV('G')">导出CSV</button> 风格轮动边界（40 日涨跌幅差）</h2>
 <div id="chG" class="chart"></div><details class="note"><summary>指标定义与读法</summary><div class="note-body"><b>构建定义（风格轮动边界）</b><br>
 · 大小盘：中证2000(932000) ÷ 上证50(000016) 的 40 个交易日在涨跌幅差（pct）；<br>
 · 成长价值：国证成长(399370) ÷ 国证价值(399371) 的 40 日涨跌幅差（pct）。<br><br>
@@ -171,6 +173,42 @@ function timeAxis(){ return {type:'time',axisLine:{lineStyle:{color:'#bbb'}}}; }
 function mk(id,opt){ const c=echarts.init(document.getElementById(id)); c.setOption(opt); window.addEventListener('resize',()=>c.resize()); return c; }
 function toPairs(s){ return s; }
 function vlines(dates,color,op,w){ return dates.map(d=>({xAxis:d,lineStyle:{color:color,opacity:op,width:w||1}})); }
+const DL = {
+  'A': {label:'百元溢价率', keys:[['A_sp','百元溢价率(softplus)%'],['A_exp','百元溢价率(指数法)%'],['A_pct','2020以来分位%']]},
+  'P': {label:'期权定价偏离度', keys:[['p_dev','偏离度中位数D%'],['p_dev_pct','2020以来分位%']]},
+  'B': {label:'价格与溢价率', keys:[['B_mean','均价(元)'],['B_med','中位价(元)'],['B_mean_pct','均价2020分位%'],['B_med_pct','中位价2020分位%'],['med_cprem','溢价率中位数%'],['med_cprem_pct','溢价率2020分位%']]},
+  'C': {label:'弱势品种', keys:[['C','弱势品种债底溢价率均值%']]},
+  'H': {label:'甜点转债数', keys:[['h_count','甜点数(只)'],['h_share','甜点率%']]},
+  'D': {label:'债性偏离度', keys:[['D21','偏离21日均线%'],['D55','偏离55日均线%']]},
+  'R': {label:'转债正股相对强弱', keys:[['ratio','转债/正股比值'],['R_dev','250日偏离度%']]},
+  'S': {label:'情绪值', keys:[['S_senti','情绪值%'],['S_turn','换手率%'],['S_pct','换手率250日分位%']]},
+  'G': {label:'风格轮动边界', keys:[['G_sb','小盘−大盘40日pct'],['G_gv','成长−价值40日pct']]},
+};
+function dlHeat(){ /* E 估值试纸热图：日期×组 矩阵 */
+  let csv='日期,'+D.heat_groups.join(',')+'
+';
+  D.heat_dates.forEach((dt,i)=>{ const row=D.heat_data.filter(r=>r[0]===i); const vals={};
+    row.forEach(r=>vals[r[1]]=r[2]);
+    csv+=dt+','+D.heat_groups.map(g=>vals[g]===undefined?'':vals[g]).join(',')+'
+'; });
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='cb_timing_E_heatmap.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
+function dlCSV(k){
+  if(k==='E'){ dlHeat(); return; }
+  const cfg=DL[k]; if(!cfg) return;
+  const rows={};
+  cfg.keys.forEach(([f])=>{ (D[f]||[]).forEach(p=>{ (rows[p[0]]=rows[p[0]]||{})[f]=p[1]; }); });
+  const dates=Object.keys(rows).sort();
+  let csv='日期,'+cfg.keys.map(([,n])=>n).join(',')+'
+';
+  dates.forEach(d=>{ csv+=d+','+cfg.keys.map(([f])=>rows[d][f]===undefined?'':rows[d][f]).join(',')+'
+'; });
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='cb_timing_'+k+'.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
 
 /* ---- A ---- */
 mk('chA',{tooltip:{trigger:'axis'},grid:baseGrid({right:56}),xAxis:timeAxis(),
