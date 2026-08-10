@@ -185,13 +185,11 @@ const DL = {
   'G': {label:'风格轮动边界', keys:[['G_sb','小盘−大盘40日pct'],['G_gv','成长−价值40日pct']]},
 };
 function dlHeat(){ /* E 估值试纸热图：日期×组 矩阵 */
-  let csv='日期,'+D.heat_groups.join(',')+'
-';
+  let csv='日期,'+D.heat_groups.join(',')+'\n';
   D.heat_dates.forEach((dt,i)=>{ const row=D.heat_data.filter(r=>r[0]===i); const vals={};
     row.forEach(r=>vals[r[1]]=r[2]);
-    csv+=dt+','+D.heat_groups.map(g=>vals[g]===undefined?'':vals[g]).join(',')+'
-'; });
-  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+    csv+=dt+','+D.heat_groups.map(g=>vals[g]===undefined?'':vals[g]).join(',')+'\n'; });
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download='cb_timing_E_heatmap.csv'; a.click(); URL.revokeObjectURL(a.href);
 }
@@ -201,11 +199,9 @@ function dlCSV(k){
   const rows={};
   cfg.keys.forEach(([f])=>{ (D[f]||[]).forEach(p=>{ (rows[p[0]]=rows[p[0]]||{})[f]=p[1]; }); });
   const dates=Object.keys(rows).sort();
-  let csv='日期,'+cfg.keys.map(([,n])=>n).join(',')+'
-';
-  dates.forEach(d=>{ csv+=d+','+cfg.keys.map(([f])=>rows[d][f]===undefined?'':rows[d][f]).join(',')+'
-'; });
-  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  let csv='日期,'+cfg.keys.map(([,n])=>n).join(',')+'\n';
+  dates.forEach(d=>{ csv+=d+','+cfg.keys.map(([f])=>rows[d][f]===undefined?'':rows[d][f]).join(',')+'\n'; });
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download='cb_timing_'+k+'.csv'; a.click(); URL.revokeObjectURL(a.href);
 }
