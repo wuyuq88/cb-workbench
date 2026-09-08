@@ -78,6 +78,13 @@ tbody tr.hl{background:#fff8e6}
 .foot{color:var(--tx3);font-size:11px;padding:14px 2px 0;line-height:1.8}
 .foot code{background:#eceef1;padding:1px 5px;border-radius:3px;font-size:10.5px}
 .tblwrap{max-height:560px;overflow:auto;padding:0 6px 10px}
+.meth{padding:16px 18px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:900px){.meth{grid-template-columns:1fr}}
+.meth .m{background:#fafbfc;border-radius:9px;padding:12px 14px;border-left:3px solid var(--brand)}
+.meth .m h4{font-size:12.5px;font-weight:650;margin-bottom:4px}
+.meth .m p{font-size:11.5px;color:var(--tx2);line-height:1.7}
+.meth .m code{background:#eceef1;padding:1px 5px;border-radius:3px;font-size:10.5px}
+.meth .m b{color:var(--tx)}
 </style>
 </head>
 <body>
@@ -85,7 +92,7 @@ tbody tr.hl{background:#fff8e6}
   <div class="hd">
     <div>
       <h1>板块注意力地图<span class="dot"> ·</span> 一图看清市场的强弱与方向</h1>
-      <div class="sub">四象限轮动定位 | 横轴 相对强弱 RS-Ratio · 纵轴 强弱动量 RS-Momentum · 气泡 动量加速度</div>
+      <div class="sub">四象限轮动定位 | 横轴 相对强弱 RS-Ratio · 纵轴 强弱动量 RS-Momentum · 气泡 动量加速度 · <b style="color:var(--brand)">周频更新</b></div>
     </div>
     <div class="meta">
       <div>数据截至 <b id="mDate">—</b> · 基准 <b id="mBench">—</b></div>
@@ -158,6 +165,20 @@ tbody tr.hl{background:#fff8e6}
         <th data-k="r1w">近1周%</th><th data-k="r4w">近4周%</th><th data-k="ytd">YTD%</th>
       </tr></thead><tbody></tbody>
     </table></div>
+  </div>
+
+  <div class="card mt16">
+    <div class="card-h"><h2>指标计算规则 · 方法说明</h2><div class="note">周频更新 · 数据截至 <span id="mDate2">—</span> · 样本 <span id="mN2">—</span> 个申万二级行业</div></div>
+    <div class="meth">
+      <div class="m"><h4>① 数据与基准</h4><p>样本为 <b>124 个申万二级行业指数</b>（代码如 801952.SI）；基准为 <b>万得全A（881001.WI）</b>。采用日频收盘价，源区间 2010-01-05 ~ 2026-09-04，每周五收盘采样（<code>resample("W-FRI")</code>）后计算。</p></div>
+      <div class="m"><h4>② RS · 相对强弱</h4><p><code>RS = 行业收盘价 ÷ 万得全A收盘价 × 100</code>。RS &gt; 100 表示该行业相对全A更强，是后续一切指标的基础序列。</p></div>
+      <div class="m"><h4>③ RS-Ratio · 横轴（相对强弱）</h4><p>对周频 RS 序列取 <b>10 周变化率</b>：<code>100 × RS(t) ÷ RS(t−10)</code>，再做 <b>3 周均线平滑</b>。数值 &gt; 100 = 近 10 周相对全A走强；越靠右，相对强度越高。</p></div>
+      <div class="m"><h4>④ RS-Momentum · 纵轴（强弱动量）</h4><p>把 RS-Ratio 当作"价格"，按同口径再算一次：<code>10 周变化率 + 3 周平滑</code>。&gt; 100 = 相对强弱本身仍在抬升（动量向上）；&lt; 100 = 动量掉头向下。</p></div>
+      <div class="m"><h4>⑤ 动量加速度 · 气泡颜色/大小</h4><p>对 RS-Ratio 做<b>周频二阶差分</b>（Δ²RS-Ratio，即强弱变化的加速度），每周在全部行业中做<b>横截面分位排名（0–100）</b>。分位 &gt; 50 = 加速吸引注意力（<b style="color:#c0392b">红色</b>），&lt; 50 = 减速（<b style="color:#1e8449">蓝色</b>）；越接近 0/100 气泡越大、变化越极端。</p></div>
+      <div class="m"><h4>⑥ 涨跌幅类指标</h4><p>近 1 周 = 周收盘环比；近 4 周 = 4 周收盘环比；当日 = 最新交易日环比；YTD = 年初至今。均由收盘价直接计算，未年化。</p></div>
+      <div class="m"><h4>⑦ 四象限与演进逻辑</h4><p>以 <b>100 为强弱分界线</b>：右上领先（既强、动量向上）、左上改善（仍弱、动量回升）、右下转弱（仍强、动量掉头）、左下滞后（既弱、动量向下）。板块倾向沿 <b>改善 → 领先 → 转弱 → 滞后</b> 顺时针演进。</p></div>
+      <div class="m"><h4>⑧ 参数与更新</h4><p>变化窗口 <code>T = 10</code> 周 · 平滑 <code>MA_W = 3</code> 周 · 图表展示近 61 周（2025-07 起）· 轨迹 4/8 周可切换。<b>本页面周频更新</b>：每周五收盘后替换「主题行业.xlsx」（保持 Sheet2 结构不变，末列为 881001.WI），重跑 <code>rrg_build_final.py</code> 即刷新。</p></div>
+    </div>
   </div>
 
   <div class="foot">
@@ -350,6 +371,8 @@ window.addEventListener('resize',()=>chart.resize());
 
 /* ---------- 页眉 ---------- */
 document.getElementById('mDate').textContent=dates[LAST];
+document.getElementById('mDate2').textContent=dates[LAST];
+document.getElementById('mN2').textContent=S.length;
 document.getElementById('mBench').textContent='万得全A '+DATA.bench+'（'+S.length+' 个行业）';
 document.getElementById('mN').textContent=S.length;
 document.getElementById('mR').textContent=DATA.srcRange.join(' ~ ');
